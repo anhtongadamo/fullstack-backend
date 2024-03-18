@@ -6,7 +6,9 @@ use App\Http\Resources\BookingResource;
 use App\Http\Resources\PassengerResource;
 use App\Models\Booking;
 use App\Models\BookingPassenger;
+use App\Models\Invoice;
 use App\Models\Passenger;
+use App\Models\Tour;
 use Exception;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
@@ -66,11 +68,27 @@ class BookingController extends BaseController
                     422
                 );
             }
+            $tour = Tour::find($request->id);
+
+            if (!$tour) {
+                return $this->errorResponse(
+                    __('api.not_found', ['item' => 'Tour']),
+                    __('api.notfound_error'),
+                    [],
+                    404
+                );
+            }
+
 
             $newBooking = Booking::create([
                 'tour_id' => $request->id,
                 'tour_date' => $request->tour_date,
                 'status' => Booking::SUBMITTED
+            ]);
+            $newInvoice = Invoice::create([
+                'booking_id' => $newBooking->id,
+                'amount' => $tour->price,
+                'status' => Invoice::UNPAID
             ]);
 
             $passengerIds = $passenger->updateOrCreatePassengers($request->passengers);
