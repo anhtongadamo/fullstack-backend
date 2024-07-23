@@ -9,8 +9,7 @@
 
 # About FullStack-backend
 
-This is an API Laravel project for create tour and booking tour (Fullstack-dev-test)
-
+This is an API Laravel project for create tour and booking tour
 ## Project setup
 ```
 git pull
